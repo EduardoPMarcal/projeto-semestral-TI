@@ -1,0 +1,144 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://api.themoviedb.org/3/search/multi?query={{ $json.chatInput }}&api_key=d211dc1a9ec8293735f36cea0c1769d8",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4984a62a-4ecc-44f1-981d-88f9744658c3",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "097b01f1-140a-45bb-9a19-6f4ac01f9a0f",
+              "leftValue": "={{$json[\"media_type\"]}}",
+              "rightValue": "movie",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "820fbe48-f1b9-4e8c-af67-8bd0251124e3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5756b465-39f6-4e26-9605-904f5d48bd1e",
+      "name": "When chat message received",
+      "webhookId": "10158cf5-d2cf-47db-9d0b-eec77d1cba41"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "733d5f29-f817-4762-8451-c1547124a58d",
+              "name": "text",
+              "value": "={{\n\" Filmes:\\n\" +\n$json[\"results\"]\n  .filter(item => item.media_type === \"movie\")\n  .slice(0,5)\n  .map(item => \"• \" + item.title)\n  .join(\"\\n\")\n\n+ \"\\n\\n Séries:\\n\" +\n\n$json[\"results\"]\n  .filter(item => item.media_type === \"tv\")\n  .slice(0,5)\n  .map(item => \"• \" + item.name)\n  .join(\"\\n\")\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        0
+      ],
+      "id": "49c95bf9-b2aa-4128-9ac0-9538a26226e4",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "296486c0-93a9-4521-b9b7-76c05178c30e",
+  "meta": {
+    "instanceId": "204fd844b277192faeef6b146a00a7f4a07e52bfe2489d160cfa4bf631fd736c"
+  },
+  "id": "yDSL3pKdvnmKgZM3",
+  "tags": []
+}
