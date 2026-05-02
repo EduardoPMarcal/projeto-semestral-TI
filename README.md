@@ -19,8 +19,6 @@ flowchart TD
     D --> E[Gemini analisa histórico e preferências]
     E --> F[Gemini sugere próximo filme ou série para assistir]
 
-    
-
     F --> I[Usuário assiste episódio]
     I --> J[Atualiza progresso na Watchlist]
 
