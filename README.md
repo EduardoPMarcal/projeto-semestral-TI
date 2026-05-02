@@ -9,18 +9,19 @@
 | [ARTHUR DE ALMEIDA QUEIROZ] | [arthuralmeida2007-design] |
 | [EDUARDO PIANCATELLI MARÇAL] | [eduardoPMarcal] |
 | [lUCAS DA PAZ MARINHO | [lucasdpmarinho] |
+## Como funciona
+Entrada: O usuario informa ao sistema o nome de um filme ou série que deseja assistir.
+Processamento: O sistema utiliza a API TMDB para consultar o filme ou série solicitado, com o filme selecionado o sistema utiliza IA para atualizar um perfil do usuário para futuras recomendacões. Por fim é retornado o filme ao usuário.
+Saída: Após assitir o filme ou série o sistema retorna à atualização do perfil de usuário atualizando com novos dados, sugerindo assim outros filmes e séries.
 ## Arquitetura
 ```mermaid
 flowchart TD
-    A[Usuário acessa a aplicação] --> B[Adiciona séries à Watchlist]
+    A[Usuário acessa a aplicação] --> B[Adiciona nome de filme ou série]
     B --> C[Aplicação consulta API do TMDB]
-    C --> D[Obtém dados de episódios e lançamentos]
+    C --> D[Retorna filme ou série pesquisada]
 
-    D --> E[IA analisa histórico e preferências]
-    E --> F[IA sugere próximo episódio para assistir]
-
-    D --> G[Verifica novos episódios lançados]
-    G --> H[Sistema envia notificação ao usuário]
+    D --> E[Gemini analisa histórico e preferências]
+    E --> F[Gemini sugere próximo filme ou série para assistir]
 
     F --> I[Usuário assiste episódio]
     I --> J[Atualiza progresso na Watchlist]
