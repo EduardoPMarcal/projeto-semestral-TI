@@ -1,0 +1,141 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://api.themoviedb.org/3/search/multi?query={{ $json.chatInput }}&api_key=d211dc1a9ec8293735f36cea0c1769d8",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8cc9761e-4a96-4761-b321-47a5520de57a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "eb1a8fcc-32c9-4417-8343-1316217c62da",
+      "name": "When chat message received",
+      "webhookId": "10158cf5-d2cf-47db-9d0b-eec77d1cba41"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "733d5f29-f817-4762-8451-c1547124a58d",
+              "name": "text",
+              "value": "={{$json[\"content\"][\"parts\"][0][\"text\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        0
+      ],
+      "id": "eef23add-753e-41a1-9791-893005663d1e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3-flash-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Usuário: {{$json[\"chatInput\"]}}\n\nResultados:\n{{$json[\"results\"]\n  .slice(0,2)\n  .map(item => item.title || item.name)\n  .join(\", \")}}\n\nSugira conteúdos parecidos."
+            },
+            {
+              "content": "Você é um assistente de filmes e séries.\nResponda de forma curta e direta.",
+              "role": "model"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "2394e71a-9e08-43d3-8e5d-c82c599144dd",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "jNQg9oahUo0Kqt0P",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1b742767-aeca-4fb2-be13-61733a50cb4c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "70279d153fe68d56c9d3af6958cc39e70e6cdc8b64d6fedc66ed05ee6116b4c4"
+  },
+  "id": "oD6C3DFejtnepoN5",
+  "tags": []
+}
